@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import {DataLoaderService, PackageType, UN_number} from "../data-loader.service";
 import {map, Observable, startWith} from "rxjs";
 import {FormGroup, FormControl, Validators} from '@angular/forms';
+import {formatDate} from "@angular/common";
 
 @Component({
   selector: 'app-shipper',
@@ -9,8 +10,10 @@ import {FormGroup, FormControl, Validators} from '@angular/forms';
   styleUrls: ['./shipper.component.css']
 })
 export class ShipperComponent {
+  @Output() finished = new EventEmitter<string>();
 
   storage_key = Math.floor(Math.random() * 10000).toString()
+  timestamp = formatDate(new Date(), 'dd-MM-yyyy hh:mm', 'en-UK');
 
   first_valid: boolean = false;
   second_valid: boolean = false;
@@ -46,6 +49,8 @@ export class ShipperComponent {
 
 
   constructor() {
+    localStorage.setItem('dtm' + this.storage_key, this.timestamp)
+
     this.firstForm = new FormGroup({
       unCtrl: new FormControl('', Validators.required),
       properName: new FormControl('', Validators.required),
@@ -150,7 +155,7 @@ export class ShipperComponent {
       }
       else {
         this.fileName = file.name;
-        this.secondForm.controls['file'].setValue(this.fileName)
+        this.secondForm.controls['file'].setValue('')
         localStorage.setItem('img' + this.storage_key, '')
         this.file_error = 'Invalid file type.'
       }
@@ -166,25 +171,24 @@ export class ShipperComponent {
       let file_type = file.name.split('.').pop();
       if (file_type == 'pdf') {
         this.dgdName = file.name;
-        const formData = new FormData();
-        formData.append("thumbnail", file);
         this.thirdForm.controls['file'].setValue(this.dgdName)
 
+        let blob = new Blob([file], {
+          type: 'application/pdf'
+        });
+
         const reader = new FileReader();
-        reader.readAsDataURL(file);
         reader.onload = () => {
           if (typeof reader.result === "string") {
-            localStorage.setItem('dgd' + this.storage_key, reader.result)
+            localStorage.setItem('dgd' + this.storage_key, reader.result);
           }
-          else {
-            localStorage.setItem('dgd' + this.storage_key, '')
-          }
-        };
+        }
+        reader.readAsDataURL(blob);
 
       }
       else {
         this.dgdName = file.name;
-        this.thirdForm.controls['file'].setValue(this.dgdName)
+        this.thirdForm.controls['file'].setValue('')
         localStorage.setItem('dgd' + this.storage_key, '')
         this.dgd_error = 'Invalid file type.'
       }
@@ -228,7 +232,8 @@ export class ShipperComponent {
 
   confirmThird() {
     if (this.thirdForm.valid) {
-      this.third_valid = true
+      this.third_valid = true;
+      this.finished.emit('done');
     }
     this.third_clicked = true
   }

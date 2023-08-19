@@ -1,2 +1,16 @@
 
-<app-shipper></app-shipper>
+<div class="main-div" *ngIf="!active_shipper && !active_forwarder && !active_operator">
+
+  <button mat-raised-button color="primary" (click)="activate_shipper()">Shipper</button>
+
+  <button mat-raised-button color="primary" (click)="activate_forwarder()">Freight Forwarder</button>
+
+  <button mat-raised-button color="primary" (click)="activate_operator()">Carrier Operator</button>
+
+</div>
+
+<app-shipper *ngIf="active_shipper" (finished)="finish_shipper($event)"></app-shipper>
+
+<app-forwarder *ngIf="active_forwarder" (finished)="finish_forwarder($event)"></app-forwarder>
+
+<app-operator *ngIf="active_operator" (finished)="finish_operator($event)"></app-operator>

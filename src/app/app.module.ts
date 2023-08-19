@@ -12,10 +12,14 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import { ForwarderComponent } from './forwarder/forwarder.component';
+import { OperatorComponent } from './operator/operator.component';
 @NgModule({
   declarations: [
     AppComponent,
-    ShipperComponent
+    ShipperComponent,
+    ForwarderComponent,
+    OperatorComponent
   ],
     imports: [
         BrowserModule,

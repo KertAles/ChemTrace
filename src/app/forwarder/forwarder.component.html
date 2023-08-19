@@ -1,0 +1,122 @@
+
+<div class="main-div">
+  <div class="form-div" *ngIf="awb_active">
+    <form class="form" [formGroup]="awbForm">
+      <b>Potrdite veljavnost AWB dokumenta.</b>
+
+      <div class="checkbox-div">
+        <mat-checkbox formControlName="handling">
+          Potrdite, da ste pod polje ''Handling information'' na AWB dokumentu vnesli: <br/>
+
+          Dangerous Goods as per associated DGD – Cargo Aircraft Only
+        </mat-checkbox>
+        <mat-error *ngIf="awbForm.controls['handling'].invalid && awb_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div">
+        <mat-checkbox formControlName="natureAndQuantity">
+          Potrdite, da ste pod polje ''Nature and Quantity of Goods'' vnesli splošen opis blaga: <br/>
+          Chemicals / Pharmaceuticals / Disinfectant / Medicine
+        </mat-checkbox>
+        <mat-error *ngIf="awbForm.controls['natureAndQuantity'].invalid && awb_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div">
+        <mat-checkbox formControlName="signature">
+          Potrdite, da ste pod polje ''Signature of Shipper or his Agent'' vnesli svoje ime in priimek
+        </mat-checkbox>
+        <mat-error *ngIf="awbForm.controls['signature'].invalid && awb_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="file-upload">
+        <b>Naložite AWB dokument.</b>
+        <input type="file" class="file-input"
+               (change)="onAWBSelected($event)" #fileUploadAWB>
+
+        <div class="file-upload">
+
+          {{awbName || "No file uploaded yet."}}
+
+          <button mat-mini-fab color="primary" class="upload-btn"
+                  (click)="fileUploadAWB.click()">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+
+          <mat-error *ngIf="awb_error != ''">  {{awb_error}}  </mat-error>
+          <mat-error *ngIf="awbForm.controls['file'].invalid && awb_clicked">  DGD document required.  </mat-error>
+        </div>
+      </div>
+
+      <button mat-raised-button color="primary" (click)="confirmAWB()">Confirm</button>
+
+    </form>
+  </div>
+
+  <div class="form-div" *ngIf="dgd_active">
+    <form class="form" [formGroup]="dgdForm">
+
+      <div *ngIf="!dgd_selected">
+        <b>Izberite DGD dokument.</b>
+        <div class="dgd_select"  *ngFor="let item of dgd_list">
+          <span (click)="select_dgd(item['key'].substring(3))">{{item['key']}} | {{localStorage.getItem('dtm' + item['key'].substring(3))}}</span>
+        </div>
+      </div>
+
+      <div *ngIf="dgd_selected">
+        <b>Potrdite veljavnost izbranega DGD dokumenta.</b>
+
+        <div class="checkbox-div">
+          <mat-checkbox formControlName="awb">
+            Potrdite, da je na DGD dokumentu vnesena AWB številka (Airwaybill number – desno zgoraj).
+          </mat-checkbox>
+          <mat-error *ngIf="dgdForm.controls['awb'].invalid && dgd_clicked">  Required.  </mat-error>
+        </div>
+
+        <div class="checkbox-div">
+          <mat-checkbox formControlName="departure">
+            Potrdite, da je na DGD dokumentu vneseno letališče odpreme (Airport of departure).
+          </mat-checkbox>
+          <mat-error *ngIf="dgdForm.controls['departure'].invalid && dgd_clicked">  Required.  </mat-error>
+        </div>
+
+        <div class="checkbox-div">
+          <mat-checkbox formControlName="destination">
+            Potrdite, da je na DGD dokumentu vneseno letališče končne destinacije (Airport of destination).
+          </mat-checkbox>
+          <mat-error *ngIf="dgdForm.controls['destination'].invalid && dgd_clicked">  Required.  </mat-error>
+        </div>
+
+        <div class="file-upload">
+          <b>Naložite DGD dokument.</b>
+          <input type="file" class="file-input"
+                 (change)="onDGDSelected($event)" #fileUploadDGD>
+
+          <div class="file-upload">
+
+            {{dgdName || "No file uploaded yet."}}
+
+            <button mat-mini-fab color="primary" class="upload-btn"
+                    (click)="fileUploadDGD.click()">
+              <mat-icon>attach_file</mat-icon>
+            </button>
+
+            <mat-error *ngIf="dgd_error != ''">  {{dgd_error}}  </mat-error>
+            <mat-error *ngIf="dgdForm.controls['file'].invalid && dgd_clicked">  DGD document required.  </mat-error>
+          </div>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="confirmDGD()">Confirm</button>
+      </div>
+    </form>
+  </div>
+
+
+
+  <div *ngIf="!awb_active && !dgd_active">
+    <button mat-raised-button color="primary" (click)="activate_awb()">Check AWB Document</button>
+    <button mat-raised-button color="primary" (click)="activate_dgd()">Check DGD Document</button>
+    <button mat-raised-button color="primary" (click)="finishForm()">Return</button>
+  </div>
+
+</div>
+
