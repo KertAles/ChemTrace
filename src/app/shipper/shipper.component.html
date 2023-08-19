@@ -1,0 +1,362 @@
+
+<div class="main-div">
+  <div class="form-div" *ngIf="!first_valid">
+    <form class="form" [formGroup]="firstForm">
+      <mat-form-field class="width">
+        <mat-label>UN Number</mat-label>
+        <input
+          matInput
+          [matAutocomplete]="auto1"
+          formControlName="unCtrl"
+          required
+        />
+        <mat-autocomplete #auto1="matAutocomplete">
+          <mat-option
+            *ngFor="let un_num of filteredUN | async"
+            [value]="un_num.id"
+          >
+            <span>{{ un_num.id }} | {{ un_num.name }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="firstForm.controls['unCtrl'].invalid">Invalid entry.</mat-error>
+      </mat-form-field>
+
+      <br/>
+
+      <mat-form-field class="width">
+        <mat-label>Proper shipping name</mat-label>
+        <input matInput type="text" formControlName="properName">
+        <mat-error *ngIf="firstForm.controls['properName'].invalid">Invalid entry.</mat-error>
+      </mat-form-field>
+
+      <br/>
+
+      <div class="package-info-div">
+        <mat-form-field>
+          <mat-label>Amount</mat-label>
+          <input matInput min="1" type="number" formControlName="amount">
+          <mat-error *ngIf="firstForm.controls['amount'].invalid">Invalid entry.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Volume (L)</mat-label>
+          <input matInput min="1" type="number" formControlName="volume">
+          <mat-error *ngIf="firstForm.controls['volume'].invalid">Invalid entry.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Type</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="auto2"
+            formControlName="material"
+            required
+          />
+          <mat-autocomplete #auto2="matAutocomplete">
+            <mat-option
+              *ngFor="let pack_id of filteredPackages| async"
+              [value]="pack_id.id"
+            >
+              <span>{{ pack_id.id }} | {{ pack_id.name }}</span>
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="firstForm.controls['material'].invalid">Invalid entry.</mat-error>
+        </mat-form-field>
+      </div>
+
+      <br/>
+
+      <mat-form-field>
+        <mat-label>Packaging Group</mat-label>
+        <input
+          matInput
+          [matAutocomplete]="auto3"
+          formControlName="packagingGroup"
+          required
+        />
+        <mat-autocomplete #auto3="matAutocomplete">
+          <mat-option
+            *ngFor="let pack_id of packaging_groups"
+            [value]="pack_id.id"
+          >
+            <span>{{ pack_id.id }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="firstForm.controls['packagingGroup'].invalid">Invalid entry.</mat-error>
+      </mat-form-field>
+
+      <br/>
+
+      <div *ngIf="firstForm.valid">
+        <div *ngFor="let line of get_first_data_block().split('\n')" >
+          {{line}}
+        </div>
+      </div>
+
+      <br/>
+
+      <button mat-raised-button color="primary" (click)="confirmFirst()">Confirm</button>
+
+    </form>
+  </div>
+
+  <div class="form-div" *ngIf="first_valid && !second_valid">
+
+    <!--
+        undamaged: new FormControl(false, Validators.requiredTrue),
+        unPackage: new FormControl('', Validators.required),
+        stickerInfo: new FormControl(false, Validators.requiredTrue),
+        stickerCAO: new FormControl(false, Validators.requiredTrue),
+        stickerFlam: new FormControl(false, Validators.requiredTrue),
+        stickerShipper: new FormControl(false, Validators.requiredTrue),
+        stickerConsignee: new FormControl(false, Validators.requiredTrue),
+        stickerTel: new FormControl(false, Validators.requiredTrue),
+        stickerSideUp: new FormControl(false, Validators.requiredTrue),
+        stickerCover: new FormControl(false, Validators.requiredTrue)
+    !-->
+    <form class="form" [formGroup]="secondForm">
+      <b>Ta korak vas vodi do pravilnega označevanja pošiljke. Bodite pozorni, da bodo vse zahtevane
+        nalepke polepljene na isti strani embalaže.</b>
+      <br/>
+      <mat-checkbox formControlName="undamaged"> Potrdite, da je embalaža nepoškodovana in ustrezna za nadaljnji transport.</mat-checkbox>
+      <mat-error *ngIf="secondForm.controls['undamaged'].invalid && second_clicked">  Required.  </mat-error>
+
+      <mat-form-field class="width">
+        <mat-label>Package UN</mat-label>
+        <input matInput type="text" formControlName="unPackage">
+        <mat-error *ngIf="secondForm.controls['unPackage'].invalid && second_clicked">Invalid entry.</mat-error>
+      </mat-form-field>
+
+      <mat-checkbox formControlName="stickerInfo">
+        Potrdite, da je pošiljka označena z ustrezno nalepko: <br/>
+        <div *ngFor="let line of get_package_info().split('\n')" >
+          {{line}}
+        </div>
+      </mat-checkbox>
+      <mat-error *ngIf="secondForm.controls['stickerInfo'].invalid && second_clicked">  Required.  </mat-error>
+
+
+      <mat-checkbox formControlName="stickerCAO">
+        Potrdite, da je pošiljka označena z ustrezno nalepko: CAO (Cargo aircraft only)<br/>
+        <img src="/assets/cao.png" alt="Cargo aircraft only" style="width:75px">
+      </mat-checkbox>
+      <mat-error *ngIf="secondForm.controls['stickerCAO'].invalid && second_clicked">  Required.  </mat-error>
+
+
+      <mat-checkbox formControlName="stickerFlam">
+        Potrdite, da je pošiljka označena z ustrezno nalepko: Flammable liquid<br/>
+        <img src="/assets/flam.png" alt="Flammable liquid" style="width:75px">
+      </mat-checkbox>
+      <mat-error *ngIf="secondForm.controls['stickerFlam'].invalid && second_clicked">  Required.  </mat-error>
+
+      <!--
+        stickerShipper: new FormControl(false, Validators.requiredTrue),
+        stickerConsignee: new FormControl(false, Validators.requiredTrue),
+        stickerTel: new FormControl(false, Validators.requiredTrue),
+        stickerSideUp: new FormControl(false, Validators.requiredTrue),
+        stickerCover: new FormControl(false, Validators.requiredTrue)
+    !-->
+
+      <b>Potrdite, da je pošiljka označena z ustrezno nalepko: </b>
+      <br/>
+      <div class="checkbox-div">
+        <mat-checkbox formControlName="stickerShipper">
+          naziv pošiljatelja<br/>
+          naslov pošiljatelja<br/>
+          kontakt pošiljatelja
+        </mat-checkbox>
+        <mat-error *ngIf="secondForm.controls['stickerShipper'].invalid && second_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!secondForm.controls['stickerShipper'].invalid">
+        <mat-checkbox formControlName="stickerConsignee">
+          naziv prejemnika<br/>
+          naslov prejemnika<br/>
+          kontakt prejemnika
+        </mat-checkbox>
+        <mat-error *ngIf="secondForm.controls['stickerConsignee'].invalid && second_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!secondForm.controls['stickerConsignee'].invalid">
+        <mat-checkbox formControlName="stickerTel">
+          24/7 telefonska številka
+        </mat-checkbox>
+        <mat-error *ngIf="secondForm.controls['stickerTel'].invalid && second_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!secondForm.controls['stickerTel'].invalid">
+        <mat-checkbox formControlName="stickerSideUp">
+          This side up. <br/>
+          <img src="/assets/sideup.png" alt="This side up" style="width:75px">
+        </mat-checkbox>
+        <mat-error *ngIf="secondForm.controls['stickerSideUp'].invalid && second_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!secondForm.controls['stickerSideUp'].invalid">
+        <mat-checkbox formControlName="stickerCover">
+          Potrdite, da se nalepke ne prekrivajo med seboj.
+        </mat-checkbox>
+        <mat-error *ngIf="secondForm.controls['stickerCover'].invalid && second_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="file-upload" *ngIf="!secondForm.controls['stickerCover'].invalid">
+        <b>Naložite fotografijo pošiljke s polepljeno stranjo pošiljke.</b>
+        <input type="file" class="file-input"
+               (change)="onFileSelected($event)" #fileUpload>
+
+        <div class="file-upload">
+
+          {{fileName || "No file uploaded yet."}}
+
+          <button mat-mini-fab color="primary" class="upload-btn"
+                  (click)="fileUpload.click()">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+
+          <mat-error *ngIf="file_error != ''">  {{file_error}}  </mat-error>
+          <mat-error *ngIf="secondForm.controls['file'].invalid && second_clicked">  Picture required.  </mat-error>
+        </div>
+      </div>
+
+
+      <button mat-raised-button color="primary" (click)="confirmSecond()">Confirm</button>
+    </form>
+
+  </div>
+
+
+  <div class="form-div" *ngIf="second_valid && !third_valid">
+
+    <!--
+        shipperInfo: new FormControl(false, Validators.requiredTrue),
+        consigneeInfo: new FormControl(false, Validators.requiredTrue),
+        dgdNumbering: new FormControl(false, Validators.requiredTrue),
+        planeType: new FormControl(false, Validators.requiredTrue),
+        packageProperty: new FormControl(false, Validators.requiredTrue),
+        unNumber: new FormControl(false, Validators.requiredTrue),
+        properName: new FormControl(false, Validators.requiredTrue),
+        hazard: new FormControl(false, Validators.requiredTrue),
+        packagingGroup: new FormControl(false, Validators.requiredTrue),
+        amount: new FormControl(false, Validators.requiredTrue),
+        packagingInstruction: new FormControl(false, Validators.requiredTrue),
+        telephone: new FormControl(false, Validators.requiredTrue),
+        signature: new FormControl(false, Validators.requiredTrue)
+    !-->
+    <form class="form" [formGroup]="thirdForm">
+      <div class="checkbox-div">
+        <mat-checkbox formControlName="shipperInfo">
+          Potrdite, da ste naziv in naslov pošiljatelja vnesli v celoti.
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['shipperInfo'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['shipperInfo'].invalid">
+        <mat-checkbox formControlName="consigneeInfo">
+          Potrdite, da ste naziv in naslov prejemnika vnesli v celoti.
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['consigneeInfo'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['consigneeInfo'].invalid">
+        <mat-checkbox formControlName="dgdNumbering">
+          Potrdite, da so strani DGD dokumenta ustrezno oštevilčene (desno zgoraj).
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['dgdNumbering'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['dgdNumbering'].invalid">
+        <mat-checkbox formControlName="planeType">
+          Potrdite, da ste prečrtali neustrezen tip letala (sredina levo): <br/>
+          <span [ngClass]="is_pca ? 'null' : 'strikethrough'" >PASSENGER AND CARGO AIRCRAFT</span> / <span [ngClass]="is_cao ? 'null' : 'strikethrough'" >CARGO AIRCRAFT ONLY</span>
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['planeType'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['planeType'].invalid">
+        <mat-checkbox formControlName="packageProperty">
+          Potrdite, da ste prečrtali ustrezno lastnost pošiljke:  <br/>
+          <span [ngClass]="!is_safe ? 'null' : 'strikethrough'" >NON-RADIOACTIVE</span> / <span [ngClass]="is_safe ? 'null' : 'strikethrough'" >RADIOACTIVE NATURE AND QUANTITY OF DANGEROUS GOODS</span>
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['packageProperty'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['packageProperty'].invalid">
+        <mat-checkbox formControlName="unNumber">
+          Potrdite, da ste vnesli ustrezno UN število (sredina levo): UN {{firstForm.controls["unCtrl"].value}}
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['unNumber'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['unNumber'].invalid">
+        <mat-checkbox formControlName="properName">
+          Potrdite, da ste vnesli ustrezen Proper Shipping name: {{this.filterNumber(this.firstForm.controls["unCtrl"].value)[0].name}}, {{this.firstForm.controls["properName"].value.toUpperCase()}}
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['properName'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['properName'].invalid">
+        <mat-checkbox formControlName="hazard">
+          Potrdite, da ste vnesli ustrezen razred nevarnosti Class or Division (subsidiary hazard): {{hazard_class}}
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['hazard'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['hazard'].invalid">
+        <mat-checkbox formControlName="packagingGroup">
+          Potrdite, da ste vnesli pravilno Pakirno skupino: {{this.firstForm.controls["packagingGroup"].value}}
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['packagingGroup'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['packagingGroup'].invalid">
+        <mat-checkbox formControlName="amount">
+          Potrdite, da ste vnesli pravilno količino in tip embalaže: {{firstForm.controls["amount"].value}} {{filterPackageTypes(this.firstForm.controls["material"].value)[0].name}} x {{firstForm.controls["volume"].value}} L
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['amount'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['amount'].invalid">
+        <mat-checkbox formControlName="packagingInstruction">
+          Potrdite, da ste vnesli pravilno navodilo pakiranja Packing instruction: {{packaging_instr}}
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['packagingInstruction'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['packagingInstruction'].invalid">
+        <mat-checkbox formControlName="telephone">
+          Potrdite, da ste vnesli 24 h telephone number: {{telephone_num}}
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['telephone'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="!thirdForm.controls['telephone'].invalid">
+        <mat-checkbox formControlName="signature">
+          Potrdite, da ste vnesli svoje ime, datum in podpis (desno spodaj).
+        </mat-checkbox>
+        <mat-error *ngIf="thirdForm.controls['signature'].invalid && third_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="file-upload" *ngIf="!thirdForm.controls['signature'].invalid">
+        <b>Naložite DGD dokument.</b>
+        <input type="file" class="file-input"
+               (change)="onDGDSelected($event)" #fileUploadDGD>
+
+        <div class="file-upload">
+
+          {{dgdName || "No file uploaded yet."}}
+
+          <button mat-mini-fab color="primary" class="upload-btn"
+                  (click)="fileUploadDGD.click()">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+
+          <mat-error *ngIf="dgd_error != ''">  {{dgd_error}}  </mat-error>
+          <mat-error *ngIf="thirdForm.controls['file'].invalid && third_clicked">  DGD document required.  </mat-error>
+        </div>
+      </div>
+
+      <button mat-raised-button color="primary" (click)="confirmThird()">Confirm</button>
+    </form>
+
+  </div>
+</div>

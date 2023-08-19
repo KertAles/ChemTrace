@@ -1,0 +1,40 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.form-div {
+  width: 420px;
+}
+
+.main-div {
+  width: 420px;
+  margin: auto;
+  padding: 10px;
+  border: 3px solid #4A148C;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+
+.package-info-div {
+  width: 100%;
+}
+
+.package-info-div mat-form-field {
+  width: 33%;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}
+
+.file-input {
+  display: none;
+}
+
+.checkbox-div {
+  padding-bottom: 14px;
+}
