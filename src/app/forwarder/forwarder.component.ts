@@ -59,7 +59,7 @@ export class ForwarderComponent {
       let file_type = file.name.split('.').pop();
       if (file_type == 'pdf') {
         this.dgdName = file.name;
-        
+
         let blob = new Blob([file], {
           type: 'application/pdf'
         });
@@ -67,6 +67,7 @@ export class ForwarderComponent {
         const reader = new FileReader();
         reader.onload = () => {
           if (typeof reader.result === "string") {
+            this.dgdForm.controls['file'].setValue(this.dgdName)
             localStorage.setItem('dgd' + this.storage_key, reader.result);
           }
         }
@@ -98,6 +99,7 @@ export class ForwarderComponent {
         const reader = new FileReader();
         reader.onload = () => {
           if (typeof reader.result === "string") {
+            this.awbForm.controls['file'].setValue(this.awbName)
             localStorage.setItem('awb' + this.storage_key, reader.result);
           }
         }

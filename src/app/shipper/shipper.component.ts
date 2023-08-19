@@ -145,6 +145,7 @@ export class ShipperComponent {
         const reader = new FileReader();
         reader.onload = () => {
           if (typeof reader.result === "string") {
+            this.secondForm.controls['file'].setValue(this.fileName)
             localStorage.setItem('img' + this.storage_key, reader.result);
           }
         }
@@ -169,7 +170,6 @@ export class ShipperComponent {
       let file_type = file.name.split('.').pop();
       if (file_type == 'pdf') {
         this.dgdName = file.name;
-        this.thirdForm.controls['file'].setValue(this.dgdName)
 
         let blob = new Blob([file], {
           type: 'application/pdf'
@@ -178,6 +178,7 @@ export class ShipperComponent {
         const reader = new FileReader();
         reader.onload = () => {
           if (typeof reader.result === "string") {
+            this.thirdForm.controls['file'].setValue(this.dgdName)
             localStorage.setItem('dgd' + this.storage_key, reader.result);
           }
         }
