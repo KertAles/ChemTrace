@@ -137,20 +137,18 @@ export class ShipperComponent {
       let file_type = file.name.split('.').pop();
       if (file_type == 'jpg' || file_type == 'jpeg' || file_type == 'png') {
         this.fileName = file.name;
-        const formData = new FormData();
-        formData.append("thumbnail", file);
-        this.secondForm.controls['file'].setValue(this.fileName)
+
+        let blob = new Blob([file], {
+          type: file.type
+        });
 
         const reader = new FileReader();
-        reader.readAsDataURL(file);
         reader.onload = () => {
           if (typeof reader.result === "string") {
-            localStorage.setItem('img' + this.storage_key, reader.result)
+            localStorage.setItem('img' + this.storage_key, reader.result);
           }
-          else {
-            localStorage.setItem('img' + this.storage_key, '')
-          }
-        };
+        }
+        reader.readAsDataURL(blob);
 
       }
       else {

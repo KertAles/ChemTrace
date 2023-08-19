@@ -59,20 +59,18 @@ export class ForwarderComponent {
       let file_type = file.name.split('.').pop();
       if (file_type == 'pdf') {
         this.dgdName = file.name;
-        const formData = new FormData();
-        formData.append("thumbnail", file);
-        this.dgdForm.controls['file'].setValue(this.dgdName)
+        
+        let blob = new Blob([file], {
+          type: 'application/pdf'
+        });
 
         const reader = new FileReader();
-        reader.readAsDataURL(file);
         reader.onload = () => {
           if (typeof reader.result === "string") {
-            localStorage.setItem('dgd' + this.storage_key, reader.result)
+            localStorage.setItem('dgd' + this.storage_key, reader.result);
           }
-          else {
-            localStorage.setItem('dgd' + this.storage_key, '')
-          }
-        };
+        }
+        reader.readAsDataURL(blob);
 
       }
       else {
@@ -92,20 +90,18 @@ export class ForwarderComponent {
       let file_type = file.name.split('.').pop();
       if (file_type == 'pdf') {
         this.awbName = file.name;
-        const formData = new FormData();
-        formData.append("thumbnail", file);
-        this.awbForm.controls['file'].setValue(this.awbName)
+
+        let blob = new Blob([file], {
+          type: 'application/pdf'
+        });
 
         const reader = new FileReader();
-        reader.readAsDataURL(file);
         reader.onload = () => {
           if (typeof reader.result === "string") {
-            localStorage.setItem('awb' + this.storage_key, reader.result)
+            localStorage.setItem('awb' + this.storage_key, reader.result);
           }
-          else {
-            localStorage.setItem('awb' + this.storage_key, '')
-          }
-        };
+        }
+        reader.readAsDataURL(blob);
 
       }
       else {
