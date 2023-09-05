@@ -1,0 +1,38 @@
+
+<div class="main-div">
+
+  <div>
+    <b>Seznam DGD dokumentov</b>
+    <div class="dgd_select"  *ngFor="let item of dgd_list">
+      <span (click)="select_dgd(item['key'].substring(3))">{{item['key']}} | {{localStorage.getItem('dtm' + item['key'].substring(3))}}</span>
+    </div>
+  </div>
+
+  <br/>
+  <br/>
+  <br/>
+
+  <div>
+    <b>Seznam AWB dokumentov</b>
+    <div class="dgd_select"  *ngFor="let item of awb_list">
+      <span (click)="select_awb(item['key'].substring(3))">{{item['key']}} | {{localStorage.getItem('dtm' + item['key'].substring(3))}}</span>
+    </div>
+  </div>
+
+  <br/>
+  <br/>
+  <br/>
+
+
+  <div>
+    <b>Seznam slik</b>
+    <div class="dgd_select"  *ngFor="let item of img_list">
+      <span (click)="select_img(item['key'].substring(3))">{{item['key']}} | {{localStorage.getItem('dtm' + item['key'].substring(3))}}</span>
+    </div>
+  </div>
+
+
+
+  <button mat-raised-button color="primary" (click)="finishForm()">Return</button>
+</div>
+

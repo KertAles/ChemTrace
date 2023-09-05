@@ -214,7 +214,15 @@ export class ShipperComponent {
       'Net Qty: ' + this.firstForm.controls["volume"].value + ' L'
   }
 
-
+  downloadDGD() {
+      const link = document.createElement('a');
+      link.setAttribute('target', '_blank');
+      link.setAttribute('href', '../../assets/dgd.pdf');
+      link.setAttribute('download', 'dgd.pdf');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+  }
   confirmFirst() {
     if (this.firstForm.valid) {
       this.first_valid = true

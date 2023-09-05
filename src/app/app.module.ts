@@ -14,12 +14,14 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { ForwarderComponent } from './forwarder/forwarder.component';
 import { OperatorComponent } from './operator/operator.component';
+import { LocalStorageComponent } from './local-storage/local-storage.component';
 @NgModule({
   declarations: [
     AppComponent,
     ShipperComponent,
     ForwarderComponent,
-    OperatorComponent
+    OperatorComponent,
+    LocalStorageComponent
   ],
     imports: [
         BrowserModule,

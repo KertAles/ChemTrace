@@ -121,7 +121,6 @@ export class ForwarderComponent {
 
     if(raw_string != null) {
       this.dgd_selected = true;
-      console.log(raw_string)
       const blob = this.dataURItoBlob(localStorage.getItem(dgdKey))
       //const blob = new Blob([raw_string], {
       //  type: 'application/pdf'

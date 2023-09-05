@@ -243,7 +243,9 @@
         signature: new FormControl(false, Validators.requiredTrue)
     !-->
     <b>Izpolnite DGD dokument.</b>
+    <br/>
 
+    <button mat-raised-button color="primary" (click)="downloadDGD()">Prenos DGD dokumenta</button>
     <form class="form" [formGroup]="thirdForm">
       <div class="checkbox-div">
         <mat-checkbox formControlName="shipperInfo">

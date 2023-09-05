@@ -1,5 +1,5 @@
 
-<div class="main-div" *ngIf="!active_shipper && !active_forwarder && !active_operator">
+<div class="main-div" *ngIf="!active_shipper && !active_forwarder && !active_operator && !active_storage">
 
   <button mat-raised-button color="primary" (click)="activate_shipper()">Shipper</button>
 
@@ -7,10 +7,18 @@
 
   <button mat-raised-button color="primary" (click)="activate_operator()">Carrier Operator</button>
 
+  <br/>
+
+  <br/>
+
+  <button mat-raised-button color="secondary" (click)="activate_storage()">Local Storage</button>
+
 </div>
 
-<app-shipper *ngIf="active_shipper" (finished)="finish_shipper($event)"></app-shipper>
+<app-shipper *ngIf="active_shipper" (finished)="finish_procedure($event)"></app-shipper>
 
-<app-forwarder *ngIf="active_forwarder" (finished)="finish_forwarder($event)"></app-forwarder>
+<app-forwarder *ngIf="active_forwarder" (finished)="finish_procedure($event)"></app-forwarder>
 
-<app-operator *ngIf="active_operator" (finished)="finish_operator($event)"></app-operator>
+<app-operator *ngIf="active_operator" (finished)="finish_procedure($event)"></app-operator>
+
+<app-local-storage *ngIf="active_storage" (finished)="finish_procedure($event)"></app-local-storage>
