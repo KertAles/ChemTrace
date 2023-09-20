@@ -1,6 +1,23 @@
 
 <div class="main-div">
-  <p>operator works!</p>
+  <button mat-raised-button color="primary" (click)="downloadDGDIce()" *ngIf="localStorage.getItem('dryice') == 'ice'">Prenos DGD dokumenta za suhi led</button>
+  <button mat-raised-button color="primary" (click)="downloadDGDGen()" *ngIf="localStorage.getItem('dryice') != 'ice'">Prenos DGD dokumenta</button>
 
-  <button mat-raised-button color="primary" (click)="finishForm()">Confirm</button>
+  <div class="file-upload" >
+    <b>Naložite DGD dokument.</b>
+    <input type="file" class="file-input"
+           (change)="onDGDSelected($event)" #fileUploadDGD>
+
+    <div class="file-upload">
+
+      {{dgdName || "No file uploaded yet."}}
+
+      <button mat-mini-fab color="primary" class="upload-btn"
+              (click)="fileUploadDGD.click()">
+        <mat-icon>attach_file</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <button mat-raised-button color="primary" (click)="finishForm()">Return</button>
 </div>

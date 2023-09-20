@@ -14,14 +14,14 @@ export class PackageType {
 })
 export class DataLoaderService {
 
-  constructor() { }
+  constructor() {
 
+  }
 
   load_UN_numbers(): UN_number[]  {
-    return [{ id: 1768, name: 'Acidic liquid' },
-            { id: 1864, name: 'Basic liquid' },
+    return [{ id: 1845, name: 'Carbon dioxide, solid' },
             { id: 1993, name: 'Flammable liquid, n.o.s. *'},
-            { id: 2048, name: 'Conductive metal'}]
+            ]
   }
 
 

@@ -26,6 +26,8 @@ export class ShipperComponent {
   is_cao = true;
   is_pca = false;
   is_safe = false;
+  is_dryice = false;
+  is_refrigerant = false;
 
   hazard_class = 3;
   packaging_instr = 364;
@@ -53,6 +55,7 @@ export class ShipperComponent {
 
     this.firstForm = new FormGroup({
       unCtrl: new FormControl('', Validators.required),
+      isRefrigerant : new FormControl(false),
       properName: new FormControl('', Validators.required),
       amount: new FormControl('', Validators.required),
       volume: new FormControl('', Validators.required),
@@ -71,6 +74,7 @@ export class ShipperComponent {
       stickerTel: new FormControl(false, Validators.requiredTrue),
       stickerSideUp: new FormControl(false, Validators.requiredTrue),
       stickerCover: new FormControl(false, Validators.requiredTrue),
+      podtlak: new FormControl(false, Validators.requiredTrue),
       file: new FormControl('', Validators.required)
     });
 
@@ -196,11 +200,28 @@ export class ShipperComponent {
 
 
   get_first_data_block() {
+    this.is_dryice = this.firstForm.controls['unCtrl'].value == 1845 ? true : false
+    this.is_refrigerant = this.firstForm.controls["isRefrigerant"].value
+
+    this.is_cao = this.firstForm.controls['unCtrl'].value == 1845 ? false : true
+    this.is_safe = this.firstForm.controls['unCtrl'].value == 1845 ? true : false
+    this.packaging_instr = this.firstForm.controls['unCtrl'].value == 1845 ? 954 : 364
+
     let plane_type = this.is_cao ? "Cargo aircraft only " : "Passenger and cargo aircraft"
+    let refrigerant = ''
+
+    let volume_label = this.firstForm.controls['unCtrl'].value == 1845 ? ' kg, ' : ' L, '
+
+    if(this.firstForm.controls["unCtrl"].value == 1845) {
+      refrigerant = this.firstForm.controls["isRefrigerant"].value ? ', as a refrigerant' : ', as NOT a refrigerant'
+    }
+
+    localStorage.setItem('packInfo', this.get_package_info())
+    localStorage.setItem('dryice', this.is_dryice ? 'ice' : 'noice')
 
     return 'UN ' + this.firstForm.controls["unCtrl"].value + ' ' + this.filterNumber(this.firstForm.controls["unCtrl"].value)[0].name +
-      ', ' + this.firstForm.controls["properName"].value + '\n' +
-      this.firstForm.controls["amount"].value + ' cll' + ', ' + this.firstForm.controls["volume"].value + ' L, ' +
+      ', ' + this.firstForm.controls["properName"].value + refrigerant + '\n' +
+      this.firstForm.controls["amount"].value + ' cll' + ', ' + this.firstForm.controls["volume"].value + volume_label +
       this.filterPackageTypes(this.firstForm.controls["material"].value)[0].name + '\n' +
       "PG " + this.firstForm.controls["packagingGroup"].value + '\n' +
       "Packaging instruction " + this.packaging_instr + '\n' +
@@ -208,10 +229,11 @@ export class ShipperComponent {
   }
 
   get_package_info() {
+    let volume_label = this.firstForm.controls['unCtrl'].value == 1845 ? ' kg, ' : ' L, '
     return 'UN ' + this.firstForm.controls["unCtrl"].value + '\n'
       + this.filterNumber(this.firstForm.controls["unCtrl"].value)[0].name + ', '
       + this.firstForm.controls["properName"].value.toUpperCase() + '\n' +
-      'Net Qty: ' + this.firstForm.controls["volume"].value + ' L'
+      'Net Qty: ' + this.firstForm.controls["volume"].value + volume_label
   }
 
   downloadDGD() {
@@ -226,6 +248,9 @@ export class ShipperComponent {
   confirmFirst() {
     if (this.firstForm.valid) {
       this.first_valid = true
+      this.secondForm.controls['stickerCAO'].setValue(!this.is_cao)
+      this.secondForm.controls['stickerFlam'].setValue(this.is_dryice)
+      this.secondForm.controls['podtlak'].setValue(!this.is_dryice)
     }
     this.first_clicked = true
   }

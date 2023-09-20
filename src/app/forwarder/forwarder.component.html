@@ -4,7 +4,7 @@
     <form class="form" [formGroup]="awbForm">
       <b>Potrdite veljavnost AWB dokumenta.</b>
 
-      <div class="checkbox-div">
+      <div class="checkbox-div" *ngIf="!is_dryice">
         <mat-checkbox formControlName="handling">
           Potrdite, da ste pod polje ''Handling information'' na AWB dokumentu vnesli: <br/>
 
@@ -19,6 +19,15 @@
           Chemicals / Pharmaceuticals / Disinfectant / Medicine
         </mat-checkbox>
         <mat-error *ngIf="awbForm.controls['natureAndQuantity'].invalid && awb_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="checkbox-div" *ngIf="is_dryice">
+        <mat-checkbox formControlName="info">
+          Potrdite, da ste pod polje 'Nature and Quantity of Goods' dodali: <br/>
+
+          {{localStorage.getItem('packInfo')}}
+        </mat-checkbox>
+        <mat-error *ngIf="awbForm.controls['info'].invalid && awb_clicked">  Required.  </mat-error>
       </div>
 
       <div class="checkbox-div">

@@ -14,7 +14,8 @@ export class ForwarderComponent {
   dgd_active = false;
   awb_clicked = false;
   dgd_clicked = false;
-
+  is_dryice = false;
+  
   dgd_selected = false;
 
   awbForm: FormGroup;
@@ -38,6 +39,7 @@ export class ForwarderComponent {
     this.awbForm = new FormGroup({
       handling: new FormControl(false, Validators.requiredTrue),
       natureAndQuantity: new FormControl(false, Validators.requiredTrue),
+      info : new FormControl(false, Validators.requiredTrue),
       signature: new FormControl(false, Validators.requiredTrue),
       file: new FormControl('', Validators.required)
     });
@@ -178,6 +180,11 @@ export class ForwarderComponent {
     this.dgd_active = false;
     this.awb_active = true;
     this.awb_clicked = false;
+    this.is_dryice = localStorage.getItem('dryice') == 'ice';
+
+
+    this.awbForm.controls['handling'].setValue(this.is_dryice)
+    this.awbForm.controls['info'].setValue(!this.is_dryice)
   }
 
   activate_dgd() {

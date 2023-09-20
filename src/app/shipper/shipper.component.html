@@ -23,6 +23,14 @@
 
       <br/>
 
+      <div *ngIf="firstForm.controls['unCtrl'].value == 1845">
+        <mat-checkbox formControlName="isRefrigerant">
+          As a refrigerant
+        </mat-checkbox>
+        <br/>
+      </div>
+
+
       <mat-form-field class="width">
         <mat-label>Proper shipping name</mat-label>
         <input matInput type="text" formControlName="properName">
@@ -39,7 +47,7 @@
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Volume (L)</mat-label>
+          <mat-label>{{firstForm.controls['unCtrl'].value == 1845 ? 'Weight (kg)' : 'Volume (L)'}}</mat-label>
           <input matInput min="1" type="number" formControlName="volume">
           <mat-error *ngIf="firstForm.controls['volume'].invalid">Invalid entry.</mat-error>
         </mat-form-field>
@@ -132,18 +140,19 @@
         <div *ngFor="let line of get_package_info().split('\n')" >
           {{line}}
         </div>
+        <img src="/assets/dryice.png" alt="Dry ice sticker" style="width:75px" *ngIf="is_dryice">
       </mat-checkbox>
       <mat-error *ngIf="secondForm.controls['stickerInfo'].invalid && second_clicked">  Required.  </mat-error>
 
 
-      <mat-checkbox formControlName="stickerCAO">
+      <mat-checkbox formControlName="stickerCAO" *ngIf="is_cao">
         Potrdite, da je pošiljka označena z ustrezno nalepko: CAO (Cargo aircraft only)<br/>
         <img src="/assets/cao.png" alt="Cargo aircraft only" style="width:75px">
       </mat-checkbox>
       <mat-error *ngIf="secondForm.controls['stickerCAO'].invalid && second_clicked">  Required.  </mat-error>
 
 
-      <mat-checkbox formControlName="stickerFlam">
+      <mat-checkbox formControlName="stickerFlam" *ngIf="!is_dryice">
         Potrdite, da je pošiljka označena z ustrezno nalepko: Flammable liquid<br/>
         <img src="/assets/flam.png" alt="Flammable liquid" style="width:75px">
       </mat-checkbox>
@@ -199,7 +208,15 @@
         <mat-error *ngIf="secondForm.controls['stickerCover'].invalid && second_clicked">  Required.  </mat-error>
       </div>
 
-      <div class="file-upload" *ngIf="!secondForm.controls['stickerCover'].invalid">
+      <div class="checkbox-div" *ngIf="!secondForm.controls['stickerCover'].invalid && is_dryice">
+        <mat-checkbox formControlName="podtlak">
+          Potrdite, da je embalaža propustna oz. zavarovana pred nastankom nadtlaka zaradi
+          izhlapevanja suhega ledu
+        </mat-checkbox>
+        <mat-error *ngIf="secondForm.controls['podtlak'].invalid && second_clicked">  Required.  </mat-error>
+      </div>
+
+      <div class="file-upload" *ngIf="!secondForm.controls['stickerCover'].invalid && !secondForm.controls['podtlak'].invalid">
         <b>Naložite fotografijo pošiljke s polepljeno stranjo pošiljke.</b>
         <input type="file" class="file-input"
                (change)="onFileSelected($event)" #fileUpload>
@@ -271,7 +288,7 @@
       <div class="checkbox-div" *ngIf="!thirdForm.controls['dgdNumbering'].invalid">
         <mat-checkbox formControlName="planeType">
           Potrdite, da ste prečrtali neustrezen tip letala (sredina levo): <br/>
-          <span [ngClass]="is_pca ? 'null' : 'strikethrough'" >PASSENGER AND CARGO AIRCRAFT</span> / <span [ngClass]="is_cao ? 'null' : 'strikethrough'" >CARGO AIRCRAFT ONLY</span>
+          <span [ngClass]="!is_cao ? 'null' : 'strikethrough'" >PASSENGER AND CARGO AIRCRAFT</span> / <span [ngClass]="is_cao ? 'null' : 'strikethrough'" >CARGO AIRCRAFT ONLY</span>
         </mat-checkbox>
         <mat-error *ngIf="thirdForm.controls['planeType'].invalid && third_clicked">  Required.  </mat-error>
       </div>
