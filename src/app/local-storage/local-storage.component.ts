@@ -10,6 +10,7 @@ export class LocalStorageComponent {
 
   dgd_list = [{'key': '32423'}];
   img_list = [{'key': '32423'}];
+  dgc_list = [{'key': '32423'}];
   awb_list = [{'key': '32423'}];
 
   constructor() {
@@ -24,9 +25,18 @@ export class LocalStorageComponent {
     this.img_list = [];
 
     for(let item in localStorage) {
-      if(item.substring(0,3) == 'img') {
+      if (item.substring(0, 3) == 'img') {
         this.img_list.push({'key': item})
       }
+    }
+
+
+    this.dgc_list = [];
+
+    for(let item in localStorage) {
+        if(item.substring(0,3) == 'dgc') {
+          this.dgc_list.push({'key': item})
+        }
     }
 
     this.awb_list = [];
@@ -74,6 +84,22 @@ export class LocalStorageComponent {
       let a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = dgdKey+'.pdf';
+      a.click();
+    }
+  }
+
+  select_dgc(key: string) {
+    let dgcKey = 'dgc' + key;
+    let raw_string = localStorage.getItem(dgcKey)
+
+    if(raw_string != null) {
+      const blob = this.dataURItoBlob(localStorage.getItem(dgcKey))
+      //const blob = new Blob([raw_string], {
+      //  type: 'application/pdf'
+      //});
+      let a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = dgcKey+'.pdf';
       a.click();
     }
   }

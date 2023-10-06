@@ -133,6 +133,10 @@ export class ShipperComponent {
 
   }
 
+  finishForm() {
+    this.finished.emit('done');
+  }
+
   onFileSelected(event: any) {
     const file:File = event.target.files[0];
     this.file_error = ''
@@ -198,6 +202,20 @@ export class ShipperComponent {
     }
   }
 
+  updateUN() {
+    this.is_dryice = this.firstForm.controls['unCtrl'].value == 1845 ? true : false
+    if(this.is_dryice) {
+      this.firstForm.controls['material'].setValue('a')
+      this.firstForm.controls['packagingGroup'].setValue('I')
+      this.firstForm.controls['properName'].setValue('Dry Ice')
+    }
+    else {
+      this.firstForm.controls['material'].setValue('')
+      this.firstForm.controls['packagingGroup'].setValue('')
+      this.firstForm.controls['properName'].setValue('')
+    }
+  }
+
 
   get_first_data_block() {
     this.is_dryice = this.firstForm.controls['unCtrl'].value == 1845 ? true : false
@@ -206,6 +224,13 @@ export class ShipperComponent {
     this.is_cao = this.firstForm.controls['unCtrl'].value == 1845 ? false : true
     this.is_safe = this.firstForm.controls['unCtrl'].value == 1845 ? true : false
     this.packaging_instr = this.firstForm.controls['unCtrl'].value == 1845 ? 954 : 364
+
+    let packageNPG = ''
+
+    if(!this.is_dryice) {
+      packageNPG = this.filterPackageTypes(this.firstForm.controls["material"].value)[0].name + '\n' +
+                  "PG " + this.firstForm.controls["packagingGroup"].value + '\n'
+    }
 
     let plane_type = this.is_cao ? "Cargo aircraft only " : "Passenger and cargo aircraft"
     let refrigerant = ''
@@ -222,8 +247,7 @@ export class ShipperComponent {
     return 'UN ' + this.firstForm.controls["unCtrl"].value + ' ' + this.filterNumber(this.firstForm.controls["unCtrl"].value)[0].name +
       ', ' + this.firstForm.controls["properName"].value + refrigerant + '\n' +
       this.firstForm.controls["amount"].value + ' cll' + ', ' + this.firstForm.controls["volume"].value + volume_label +
-      this.filterPackageTypes(this.firstForm.controls["material"].value)[0].name + '\n' +
-      "PG " + this.firstForm.controls["packagingGroup"].value + '\n' +
+      packageNPG +
       "Packaging instruction " + this.packaging_instr + '\n' +
       plane_type
   }
@@ -258,6 +282,9 @@ export class ShipperComponent {
   confirmSecond() {
     if (this.secondForm.valid) {
       this.second_valid = true
+      if(this.is_dryice) {
+        this.finished.emit('done');
+      }
     }
     this.second_clicked = true
   }

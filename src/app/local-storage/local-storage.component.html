@@ -23,6 +23,17 @@
   <br/>
   <br/>
 
+  <div>
+    <b>Seznam DG checklist dokumentov</b>
+    <div class="dgd_select"  *ngFor="let item of dgc_list">
+      <span (click)="select_dgc(item['key'].substring(3))">{{item['key']}} | {{localStorage.getItem('dtm' + item['key'].substring(3))}}</span>
+    </div>
+  </div>
+
+  <br/>
+  <br/>
+  <br/>
+
 
   <div>
     <b>Seznam slik</b>

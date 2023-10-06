@@ -21,6 +21,8 @@ export class DataLoaderService {
   load_UN_numbers(): UN_number[]  {
     return [{ id: 1845, name: 'Carbon dioxide, solid' },
             { id: 1993, name: 'Flammable liquid, n.o.s. *'},
+            { id: 3066, name: 'Paint'},
+            { id: 3481, name: 'Lithium ion batteries packed with equipment'}
             ]
   }
 
@@ -29,9 +31,9 @@ export class DataLoaderService {
     return [{ id: 'a', name: 'Barrel - steel'},
       { id: 'b', name: 'Barrel - aluminium'},
       { id: 'c', name: 'Barrel - plastic'},
-      { id: 'd', name: 'Canister - steel'},
-      { id: 'e', name: 'Canister - aluminium'},
-      { id: 'f', name: 'Canister - plastic'}]
+      { id: 'd', name: 'Jerrican - steel'},
+      { id: 'e', name: 'Jerrican - aluminium'},
+      { id: 'f', name: 'Jerrican - plastic'}]
   }
 
   load_packaging_groups(): PackageType[]  {

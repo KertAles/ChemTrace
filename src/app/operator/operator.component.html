@@ -1,12 +1,12 @@
 
 <div class="main-div">
-  <button mat-raised-button color="primary" (click)="downloadDGDIce()" *ngIf="localStorage.getItem('dryice') == 'ice'">Prenos DGD dokumenta za suhi led</button>
-  <button mat-raised-button color="primary" (click)="downloadDGDGen()" *ngIf="localStorage.getItem('dryice') != 'ice'">Prenos DGD dokumenta</button>
+  <button mat-raised-button color="primary" (click)="downloadDGDIce()" *ngIf="localStorage.getItem('dryice') == 'ice'">Prenos DG checklist Dry Ice</button>
+  <button mat-raised-button color="primary" (click)="downloadDGDGen()" *ngIf="localStorage.getItem('dryice') != 'ice'">Prenos DG checklist</button>
 
   <div class="file-upload" >
-    <b>Naložite DGD dokument.</b>
+    <b>Naložite DG checklist.</b>
     <input type="file" class="file-input"
-           (change)="onDGDSelected($event)" #fileUploadDGD>
+           (change)="onDGCSelected($event)" #fileUploadDGD>
 
     <div class="file-upload">
 
@@ -16,8 +16,11 @@
               (click)="fileUploadDGD.click()">
         <mat-icon>attach_file</mat-icon>
       </button>
+      <mat-error *ngIf="dgd_error != ''">  {{dgd_error}}  </mat-error>
     </div>
   </div>
 
-  <button mat-raised-button color="primary" (click)="finishForm()">Return</button>
+  <button mat-raised-button color="primary" (click)="finishForm(true)">Confirm</button>
+
+  <button mat-raised-button color="primary" (click)="finishForm(false)">Return</button>
 </div>

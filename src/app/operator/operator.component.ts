@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter  } from '@angular/core';
-
+import {formatDate} from "@angular/common";
 @Component({
   selector: 'app-operator',
   templateUrl: './operator.component.html',
@@ -11,13 +11,30 @@ export class OperatorComponent {
   storage_key = Math.floor(Math.random() * 10000).toString()
   dgd_error: string = '';
   dgdName: string = '';
+  timestamp = formatDate(new Date(), 'dd-MM-yyyy hh:mm', 'en-UK');
 
-  finishForm() {
-    this.finished.emit('done');
+
+  constructor() {
+    localStorage.setItem('dtm' + this.storage_key, this.timestamp)
+  }
+
+  finishForm(check: any) {
+    if(check) {
+      if(this.dgdName == '') {
+        this.dgd_error = 'File required.'
+      }
+      if(this.dgd_error == ''){
+        this.finished.emit('done');
+      }
+    }
+    else {
+      this.finished.emit('done');
+    }
+
   }
 
 
-  onDGDSelected(event: any) {
+  onDGCSelected(event: any) {
     const file:File = event.target.files[0];
     this.dgd_error = ''
 
@@ -33,7 +50,7 @@ export class OperatorComponent {
         const reader = new FileReader();
         reader.onload = () => {
           if (typeof reader.result === "string") {
-            localStorage.setItem('dgd' + this.storage_key, reader.result);
+            localStorage.setItem('dgc' + this.storage_key, reader.result);
           }
         }
         reader.readAsDataURL(blob);
@@ -41,7 +58,7 @@ export class OperatorComponent {
       }
       else {
         this.dgdName = file.name;
-        localStorage.setItem('dgd' + this.storage_key, '')
+        localStorage.setItem('dgc' + this.storage_key, '')
         this.dgd_error = 'Invalid file type.'
       }
     }
@@ -50,8 +67,8 @@ export class OperatorComponent {
   downloadDGDIce() {
     const link = document.createElement('a');
     link.setAttribute('target', '_blank');
-    link.setAttribute('href', '../../assets/dgd-dryice.pdf');
-    link.setAttribute('download', 'dgd.pdf');
+    link.setAttribute('href', '../../assets/dgd-dryIce.pdf');
+    link.setAttribute('download', 'dgc.pdf');
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -61,7 +78,7 @@ export class OperatorComponent {
     const link = document.createElement('a');
     link.setAttribute('target', '_blank');
     link.setAttribute('href', '../../assets/dgd-generic.pdf');
-    link.setAttribute('download', 'dgd.pdf');
+    link.setAttribute('download', 'dgc.pdf');
     document.body.appendChild(link);
     link.click();
     link.remove();

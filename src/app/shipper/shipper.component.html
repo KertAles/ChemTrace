@@ -2,15 +2,16 @@
 <div class="main-div">
   <div class="form-div" *ngIf="!first_valid">
     <form class="form" [formGroup]="firstForm">
-      <mat-form-field class="width">
+      <mat-form-field  class="width">
         <mat-label>UN Number</mat-label>
         <input
           matInput
+          (ngModelChange)="updateUN()"
           [matAutocomplete]="auto1"
           formControlName="unCtrl"
           required
         />
-        <mat-autocomplete #auto1="matAutocomplete">
+        <mat-autocomplete  #auto1="matAutocomplete">
           <mat-option
             *ngFor="let un_num of filteredUN | async"
             [value]="un_num.id"
@@ -29,13 +30,13 @@
         </mat-checkbox>
         <br/>
       </div>
-
-
-      <mat-form-field class="width">
-        <mat-label>Proper shipping name</mat-label>
-        <input matInput type="text" formControlName="properName">
-        <mat-error *ngIf="firstForm.controls['properName'].invalid">Invalid entry.</mat-error>
-      </mat-form-field>
+      <div *ngIf="!is_dryice">
+        <mat-form-field class="width">
+          <mat-label>Proper shipping name</mat-label>
+          <input matInput type="text" formControlName="properName">
+          <mat-error *ngIf="firstForm.controls['properName'].invalid">Invalid entry.</mat-error>
+        </mat-form-field>
+      </div>
 
       <br/>
 
@@ -52,46 +53,48 @@
           <mat-error *ngIf="firstForm.controls['volume'].invalid">Invalid entry.</mat-error>
         </mat-form-field>
 
+          <mat-form-field *ngIf="!is_dryice">
+            <mat-label>Type</mat-label>
+            <input
+              matInput
+              [matAutocomplete]="auto2"
+              formControlName="material"
+              required
+            />
+            <mat-autocomplete #auto2="matAutocomplete">
+              <mat-option
+                *ngFor="let pack_id of filteredPackages| async"
+                [value]="pack_id.id"
+              >
+                <span>{{ pack_id.id }} | {{ pack_id.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="firstForm.controls['material'].invalid">Invalid entry.</mat-error>
+          </mat-form-field>
+        </div>
+
+      <br/>
+      <div *ngIf="!is_dryice">
         <mat-form-field>
-          <mat-label>Type</mat-label>
+          <mat-label>Packaging Group</mat-label>
           <input
             matInput
-            [matAutocomplete]="auto2"
-            formControlName="material"
+            [matAutocomplete]="auto3"
+            formControlName="packagingGroup"
             required
           />
-          <mat-autocomplete #auto2="matAutocomplete">
+          <mat-autocomplete #auto3="matAutocomplete">
             <mat-option
-              *ngFor="let pack_id of filteredPackages| async"
+              *ngFor="let pack_id of packaging_groups"
               [value]="pack_id.id"
             >
-              <span>{{ pack_id.id }} | {{ pack_id.name }}</span>
+              <span>{{ pack_id.id }}</span>
             </mat-option>
           </mat-autocomplete>
-          <mat-error *ngIf="firstForm.controls['material'].invalid">Invalid entry.</mat-error>
+          <mat-error *ngIf="firstForm.controls['packagingGroup'].invalid">Invalid entry.</mat-error>
         </mat-form-field>
       </div>
 
-      <br/>
-
-      <mat-form-field>
-        <mat-label>Packaging Group</mat-label>
-        <input
-          matInput
-          [matAutocomplete]="auto3"
-          formControlName="packagingGroup"
-          required
-        />
-        <mat-autocomplete #auto3="matAutocomplete">
-          <mat-option
-            *ngFor="let pack_id of packaging_groups"
-            [value]="pack_id.id"
-          >
-            <span>{{ pack_id.id }}</span>
-          </mat-option>
-        </mat-autocomplete>
-        <mat-error *ngIf="firstForm.controls['packagingGroup'].invalid">Invalid entry.</mat-error>
-      </mat-form-field>
 
       <br/>
 
@@ -380,4 +383,6 @@
     </form>
 
   </div>
+
+  <button mat-raised-button color="primary" (click)="finishForm()">Return</button>
 </div>
